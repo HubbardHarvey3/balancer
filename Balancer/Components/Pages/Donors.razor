@@ -1,0 +1,79 @@
+﻿@page "/donors"
+@inject ApplicationDBContext DbContext
+@using Microsoft.EntityFrameworkCore
+@using global::Balancer.Components.Models
+@using global::Balancer.Components.Data
+
+<h3>Donor Management</h3>
+
+<table>
+    <thead>
+        <tr>
+            <th>Donor Number</th>
+            <th>Donor Name</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>
+                <input type="number" @bind="newDonor.DonorNumber" />
+            </td>
+            <td>
+                <input type="text" @bind="newDonor.DonorName" />
+            </td>
+            <td>
+                <button @onclick="SaveDonor">Save</button>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<hr />
+
+<table>
+    <thead>
+        <tr>
+            <th>Donor Number</th>
+            <th>Donor Name</th>
+            <th>Total Donations</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var donor in donors)
+        {
+            <tr>
+                <td>@donor.DonorNumber</td>
+                <td>@donor.DonorName</td>
+                <td>@donor.TotalDonations</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+    private List<DonorModel> donors = new();
+    private DonorModel newDonor = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadDonors();
+    }
+
+    private async Task LoadDonors()
+    {
+        donors = await DbContext.Donors.ToListAsync();
+    }
+
+    private async Task SaveDonor()
+    {
+        if (newDonor.DonorNumber > 0 && !string.IsNullOrWhiteSpace(newDonor.DonorName))
+        {
+            DbContext.Donors.Add(newDonor);
+            await DbContext.SaveChangesAsync();
+            newDonor = new(); // Reset the input fields
+            await LoadDonors(); // Refresh donor list
+        }
+    }
+}
+

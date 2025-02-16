@@ -1,0 +1,6 @@
+C:\Users\hubba\gitrepos\Maui\balancer\Balancer\obj\Debug\net9.0\Balancer.csproj.AssemblyReference.cache
+C:\Users\hubba\gitrepos\Maui\balancer\Balancer\obj\Debug\net9.0\Balancer.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\hubba\gitrepos\Maui\balancer\Balancer\obj\Debug\net9.0\Balancer.AssemblyInfoInputs.cache
+C:\Users\hubba\gitrepos\Maui\balancer\Balancer\obj\Debug\net9.0\Balancer.AssemblyInfo.cs
+C:\Users\hubba\gitrepos\Maui\balancer\Balancer\obj\Debug\net9.0\Balancer.csproj.CoreCompileInputs.cache
+C:\Users\hubba\gitrepos\Maui\balancer\Balancer\obj\Debug\net9.0\Balancer.MvcApplicationPartsAssemblyInfo.cache
