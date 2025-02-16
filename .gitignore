@@ -1,0 +1,70 @@
+# General .NET build artifacts
+bin/
+obj/
+*.pdb
+*.exe
+*.dll
+*.app/
+*.ipa
+*.so
+*.dylib
+*.a
+*.o
+*.idb
+*.rsp
+
+# User-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Logs & temp files
+*.log
+*.tlog
+*.tmp
+*.temp
+*.cache
+.vscode/
+.vs/
+Thumbs.db
+*.DS_Store
+
+# NuGet Packages
+*.nupkg
+packages/
+project.lock.json
+project.assets.json
+.nuget/
+.npm/
+
+# macOS & Xcode
+*.xcuserstate
+*.xcworkspace/
+*.xcuserdatad/
+*.lock
+*.mode1v3
+*.mode2v3
+
+# Android
+*.apk
+*.aab
+*.keystore
+.android/
+**/android/bin/
+**/android/obj/
+**/android/app/
+**/android/.gradle/
+
+# iOS
+**/iOS/bin/
+**/iOS/obj/
+**/iOS/AppStore/
+**/iOS/Debug/
+**/iOS/Release/
+**/iOS/Pods/
+
+# Windows
+**/WinUI/bin/
+**/WinUI/obj/
+**/WinUI/AppPackages/
