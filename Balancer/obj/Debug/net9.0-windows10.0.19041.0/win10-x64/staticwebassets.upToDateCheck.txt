@@ -1,8 +1,0 @@
-C:\Users\hubba\gitrepos\Maui\balancer\Balancer\wwwroot\index.html
-C:\Users\hubba\gitrepos\Maui\balancer\Balancer\wwwroot\css\bootstrap\bootstrap.min.css
-C:\Users\hubba\gitrepos\Maui\balancer\Balancer\wwwroot\css\bootstrap\bootstrap.min.css.map
-C:\Users\hubba\gitrepos\Maui\balancer\Balancer\wwwroot\css\app.css
-wwwroot\css\app.css
-wwwroot\css\bootstrap\bootstrap.min.css
-wwwroot\css\bootstrap\bootstrap.min.css.map
-wwwroot\index.html
