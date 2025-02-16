@@ -71,8 +71,8 @@
         {
             DbContext.Donors.Add(newDonor);
             await DbContext.SaveChangesAsync();
-            newDonor = new(); // Reset the input fields
-            await LoadDonors(); // Refresh donor list
+            newDonor = new();
+            await LoadDonors();
         }
     }
 }

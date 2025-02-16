@@ -9,9 +9,10 @@ namespace Balancer.Components.Models
         [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int DonorNumber { get; set; }
 
-        [Required]
-        public string DonorName { get; set; }
+        public  string DonorName { get; set; }
 
         public decimal TotalDonations { get; set; }
+
+        public  string Address { get; set; }
     }
 }
