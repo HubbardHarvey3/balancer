@@ -16,6 +16,7 @@ namespace Balancer
                 });
 
             builder.Services.AddMauiBlazorWebView();
+            builder.Services.AddScoped<DonorService>();
             // Register Database Services
             builder.Services.AddDatabaseServices();
 

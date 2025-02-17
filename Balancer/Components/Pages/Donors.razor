@@ -1,6 +1,7 @@
 ﻿@page "/donors"
-@inject ApplicationDBContext DbContext
+@inject DonorService DonorService
 @using Microsoft.EntityFrameworkCore
+@using global::Balancer.Components.Services
 @using global::Balancer.Components.Models
 @using global::Balancer.Components.Data
 
@@ -80,7 +81,7 @@
                     else
                     {
                         <button @onclick="() => EditDonor(donor)">Edit</button>
-                        <button @onclick="() => DeleteDonor(donor)">Delete</button>
+                        <button @onclick="() => DeleteDonor(donor.DonorNumber)">Delete</button>
                     }
                 </td>
             </tr>
@@ -100,15 +101,14 @@
 
     private async Task LoadDonors()
     {
-        donors = await DbContext.Donors.ToListAsync();
+        donors = await DonorService.GetDonorsAsync();
     }
 
     private async Task SaveDonor()
     {
         if (newDonor.DonorNumber > 0 && !string.IsNullOrWhiteSpace(newDonor.Name))
         {
-            DbContext.Donors.Add(newDonor);
-            await DbContext.SaveChangesAsync();
+            await DonorService.AddDonorsAsync(newDonor);
             newDonor = new();
             await LoadDonors();
         }
@@ -116,21 +116,14 @@
 
     private void EditDonor(DonorModel donor)
     {
-        editingDonor = new DonorModel
-        {
-            DonorNumber = donor.DonorNumber,
-            Name = donor.Name,
-            Address = donor.Address
-        };
+        editingDonor = donor;
     }
 
     private async Task UpdateDonor(DonorModel donor)
     {
-        var donorToUpdate = await DbContext.Donors.FindAsync(donor.DonorNumber);
-        if (donorToUpdate != null && editingDonor != null)
+        if (editingDonor != null)
         {
-            donorToUpdate.Name = editingDonor.Name;
-            await DbContext.SaveChangesAsync();
+            await DonorService.UpdateDonorAsync(editingDonor);
             editingDonor = null;
             await LoadDonors();
         }
@@ -141,10 +134,9 @@
         editingDonor = null;
     }
 
-    private async Task DeleteDonor(DonorModel donor)
+    private async Task DeleteDonor(int donorNumber)
     {
-        DbContext.Donors.Remove(donor);
-        await DbContext.SaveChangesAsync();
+        await DonorService.DeleteDonorAsync(donorNumber);
         await LoadDonors();
     }
 }
