@@ -11,6 +11,7 @@
         <tr>
             <th>Donor Number</th>
             <th>Donor Name</th>
+            <th>Address</th>
             <th>Actions</th>
         </tr>
     </thead>
@@ -20,7 +21,10 @@
                 <input type="number" @bind="newDonor.DonorNumber" />
             </td>
             <td>
-                <input type="text" @bind="newDonor.DonorName" />
+                <input type="text" @bind="newDonor.Name" />
+            </td>
+            <td>
+                <input type="text" @bind="newDonor.Address" />
             </td>
             <td>
                 <button @onclick="SaveDonor">Save</button>
@@ -36,7 +40,9 @@
         <tr>
             <th>Donor Number</th>
             <th>Donor Name</th>
+            <th>Address</th>
             <th>Total Donations</th>
+            <th>Actions</th>
         </tr>
     </thead>
     <tbody>
@@ -44,8 +50,39 @@
         {
             <tr>
                 <td>@donor.DonorNumber</td>
-                <td>@donor.DonorName</td>
+                <td>
+                    @if (editingDonor?.Name == donor.Name)
+                    {
+                        <input type="text" @bind="editingDonor.Name" />
+                    }
+                    else
+                    {
+                        @donor.Name
+                    }
+                </td>
+                <td>
+                    @if (editingDonor?.Address == donor.Address)
+                    {
+                        <input type="text" @bind="editingDonor.Address" />
+                    } 
+                    else
+                    {
+                        @donor.Address
+                    }
+                </td>
                 <td>@donor.TotalDonations</td>
+                <td>
+                    @if (editingDonor?.DonorNumber == donor.DonorNumber)
+                    {
+                        <button @onclick="() => UpdateDonor(donor)">Save</button>
+                        <button @onclick="CancelEdit">Cancel</button>
+                    }
+                    else
+                    {
+                        <button @onclick="() => EditDonor(donor)">Edit</button>
+                        <button @onclick="() => DeleteDonor(donor)">Delete</button>
+                    }
+                </td>
             </tr>
         }
     </tbody>
@@ -54,6 +91,7 @@
 @code {
     private List<DonorModel> donors = new();
     private DonorModel newDonor = new();
+    private DonorModel? editingDonor;
 
     protected override async Task OnInitializedAsync()
     {
@@ -67,7 +105,7 @@
 
     private async Task SaveDonor()
     {
-        if (newDonor.DonorNumber > 0 && !string.IsNullOrWhiteSpace(newDonor.DonorName))
+        if (newDonor.DonorNumber > 0 && !string.IsNullOrWhiteSpace(newDonor.Name))
         {
             DbContext.Donors.Add(newDonor);
             await DbContext.SaveChangesAsync();
@@ -75,5 +113,38 @@
             await LoadDonors();
         }
     }
-}
 
+    private void EditDonor(DonorModel donor)
+    {
+        editingDonor = new DonorModel
+        {
+            DonorNumber = donor.DonorNumber,
+            Name = donor.Name,
+            Address = donor.Address
+        };
+    }
+
+    private async Task UpdateDonor(DonorModel donor)
+    {
+        var donorToUpdate = await DbContext.Donors.FindAsync(donor.DonorNumber);
+        if (donorToUpdate != null && editingDonor != null)
+        {
+            donorToUpdate.Name = editingDonor.Name;
+            await DbContext.SaveChangesAsync();
+            editingDonor = null;
+            await LoadDonors();
+        }
+    }
+
+    private void CancelEdit()
+    {
+        editingDonor = null;
+    }
+
+    private async Task DeleteDonor(DonorModel donor)
+    {
+        DbContext.Donors.Remove(donor);
+        await DbContext.SaveChangesAsync();
+        await LoadDonors();
+    }
+}
