@@ -10,7 +10,6 @@
 <table>
     <thead>
         <tr>
-            <th>Donor Number</th>
             <th>Donor Name</th>
             <th>Address</th>
             <th>Actions</th>
@@ -18,9 +17,6 @@
     </thead>
     <tbody>
         <tr>
-            <td>
-                <input type="number" @bind="newDonor.DonorNumber" />
-            </td>
             <td>
                 <input type="text" @bind="newDonor.Name" />
             </td>
@@ -106,7 +102,7 @@
 
     private async Task SaveDonor()
     {
-        if (newDonor.DonorNumber > 0 && !string.IsNullOrWhiteSpace(newDonor.Name))
+        if (!string.IsNullOrWhiteSpace(newDonor.Name))
         {
             await DonorService.AddDonorsAsync(newDonor);
             newDonor = new();
