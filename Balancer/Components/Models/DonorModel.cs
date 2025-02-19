@@ -8,8 +8,8 @@ namespace Balancer.Components.Models
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int DonorNumber { get; set; }
-        public  string Name { get; set; }
+        public  string Name { get; set; } = string.Empty;
         public decimal TotalDonations { get; set; }
-        public  string Address { get; set; }
+        public string Address { get; set; } = string.Empty;
     }
 }

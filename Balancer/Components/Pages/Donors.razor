@@ -1,9 +1,14 @@
 ﻿@page "/donors"
 @inject DonorService DonorService
+@inject MudBlazor.IDialogService DialogService
+@inject ILogger<Donors> Logger
 @using Microsoft.EntityFrameworkCore
+@using Microsoft.Extensions.Logging
+@using MudBlazor
 @using global::Balancer.Components.Services
 @using global::Balancer.Components.Models
 @using global::Balancer.Components.Data
+@using global::Balancer.Components
 
 <h3>Donor Management</h3>
 
@@ -71,13 +76,13 @@
                 <td>
                     @if (editingDonor?.DonorNumber == donor.DonorNumber)
                     {
-                        <button @onclick="() => UpdateDonor(donor)">Save</button>
-                        <button @onclick="CancelEdit">Cancel</button>
+                        <MudButton @onclick="() => UpdateDonor(donor)" Variant="Variant.Filled" Color="Color.Primary">Save</MudButton>
+                        <MudButton @onclick="CancelEdit" Variant="Variant.Filled" Color="Color.Warning">Cancel</MudButton>
                     }
                     else
                     {
-                        <button @onclick="() => EditDonor(donor)">Edit</button>
-                        <button @onclick="() => DeleteDonor(donor.DonorNumber)">Delete</button>
+                        <MudButton @onclick="() => EditDonor(donor)" Variant="Variant.Filled" Color="Color.Primary">Edit</MudButton>
+                        <MudButton @onclick="() => Confirm(donor.DonorNumber)" Variant="Variant.Filled" Color="Color.Warning">Delete</MudButton>
                     }
                 </td>
             </tr>
@@ -134,5 +139,22 @@
     {
         await DonorService.DeleteDonorAsync(donorNumber);
         await LoadDonors();
+    }
+
+    private async Task Confirm(int donorNumber) {
+        var parameters = new DialogParameters();
+        parameters.Add("ContentText", "Do you want to confirm?");
+        parameters.Add("ButtonText", "Yes");
+        var dialogresult = await DialogService.ShowAsync<ConfirmDeleteDialog>("Confirm", parameters);
+        var result = await dialogresult.Result;
+        if (!result.Canceled)
+        {
+            await DeleteDonor(donorNumber);
+        }
+        else 
+        {
+            Logger.LogInformation("Dialog was canceled");
+        }
+
     }
 }

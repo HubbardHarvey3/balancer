@@ -1,16 +1,20 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Balancer.Components.Data;
 using Balancer.Components.Models;
+using Microsoft.Extensions.Logging;
 
 namespace Balancer.Components.Services
 {
     internal class DonorService
     {
         private readonly ApplicationDBContext _dbContext;
+        private readonly ILogger<DonorService> _logger;
 
-        public DonorService(ApplicationDBContext dbContext)
+        public DonorService(ApplicationDBContext dbContext, ILogger<DonorService> _logger)
         {
             _dbContext = dbContext;
+            _logger = _logger;
+            _logger.LogInformation("DB Initialized");
         }
 
         public async Task<List<DonorModel>> GetDonorsAsync()
@@ -20,12 +24,14 @@ namespace Balancer.Components.Services
 
         public async Task AddDonorsAsync(DonorModel donor)
         {
+            _logger.LogInformation("Adding Donors");
             _dbContext.Donors.Add(donor);
             await _dbContext.SaveChangesAsync();
         }
 
         public async Task UpdateDonorAsync(DonorModel donor)
         {
+            _logger.LogInformation("Updating Donor");
             _dbContext.Donors.Update(donor);
             await _dbContext.SaveChangesAsync();
         }
@@ -35,6 +41,7 @@ namespace Balancer.Components.Services
             var donor = await _dbContext.Donors.FindAsync(donorNumber);
             if (donor != null)
             {
+                _logger.LogInformation("Deleting Donor");
                 _dbContext.Donors.Remove(donor);
                 await _dbContext.SaveChangesAsync();
             }

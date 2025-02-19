@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using Balancer.Components.Services;
+using MudBlazor.Services;
 
 namespace Balancer
 {
@@ -17,6 +18,9 @@ namespace Balancer
 
             builder.Services.AddMauiBlazorWebView();
             builder.Services.AddScoped<DonorService>();
+            builder.Services.AddSingleton<DialogService>();
+            builder.Services.AddMudServices();
+
             // Register Database Services
             builder.Services.AddDatabaseServices();
 
@@ -26,6 +30,7 @@ namespace Balancer
                 var dbService = scope.ServiceProvider.GetRequiredService<DBService>();
                 dbService.InitializeDatabase();
             }
+            builder.Logging.SetMinimumLevel(LogLevel.Information);
 
 #if DEBUG
             builder.Services.AddBlazorWebViewDeveloperTools();
