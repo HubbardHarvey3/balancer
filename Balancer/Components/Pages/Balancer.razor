@@ -1,7 +1,65 @@
 ﻿@page "/balancer"
+@inject DonorService DonorService
+@using Microsoft.Extensions.Logging
+@using MudBlazor
+@using global::Balancer.Components.Services
+@using global::Balancer.Components.Models
+@using global::Balancer.Components.Data
+@using global::Balancer.Components
 
 <h3>Balancer</h3>
 
+<MudDatePicker Label="Select Date" @bind-Date="selectedDate" />
+
+<MudSimpleTable Style="overflow-x: auto;">
+    <thead>
+        <tr>
+            <th>Donor Number</th>
+            <th>Donor Name</th>
+            <th>Cash</th>
+            <th>Check</th>
+            <th>Total</th>
+            <th></th>
+        </tr>
+    </thead>
+</MudSimpleTable>
+
+<MudSimpleTable Style="overflow-x: auto;">
+    <thead>
+        <tr>
+            <th>Donor Name</th>
+            <th>Address</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var donor in donors)
+        {
+            <tr>
+                <td>@donor.DonorNumber</td>
+                <td>@donor.Name</td>
+                <td>@donor.Cash</td>
+                <td>@donor.Check</td>
+                <td>@donor.Total</td>
+            </tr>
+        }
+    </tbody>
+</MudSimpleTable>
+
+<hr />
+
 @code {
+    private List<DonationEntryModel> donors = new();
+    private DateTime selectedDate = DateTime.Today;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadDonors();
+    }
+
+    private async Task LoadDonors()
+    {
+        donors = await DonorEntryService.GetDonorEntriesAsync();
+    }
+    
 
 }

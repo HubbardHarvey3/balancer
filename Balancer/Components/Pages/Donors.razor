@@ -12,7 +12,7 @@
 
 <h3>Donor Management</h3>
 
-<table>
+<MudSimpleTable Style="overflow-x: auto;">
     <thead>
         <tr>
             <th>Donor Name</th>
@@ -23,21 +23,21 @@
     <tbody>
         <tr>
             <td>
-                <input type="text" @bind="newDonor.Name" />
+                <MudTextField @bind-Value="newDonor.Name" Label="First, Last" Variant="Variant.Outlined"></MudTextField>
             </td>
             <td>
-                <input type="text" @bind="newDonor.Address" />
+                <MudTextField @bind-Value="newDonor.Address" Label="Address" Variant="Variant.Outlined"></MudTextField>
             </td>
             <td>
-                <button @onclick="SaveDonor">Save</button>
+                <MudButton @onclick="SaveDonor" Variant="Variant.Filled" Color="Color.Primary">Save</MudButton>
             </td>
         </tr>
     </tbody>
-</table>
+</MudSimpleTable>
 
 <hr />
 
-<table>
+<MudSimpleTable Style="overflow-x: auto;">
     <thead>
         <tr>
             <th>Donor Number</th>
@@ -55,7 +55,7 @@
                 <td>
                     @if (editingDonor?.Name == donor.Name)
                     {
-                        <input type="text" @bind="editingDonor.Name" />
+                        <MudTextField @bind-Value="editingDonor.Name" Variant="Variant.Outlined"></MudTextField>
                     }
                     else
                     {
@@ -65,7 +65,7 @@
                 <td>
                     @if (editingDonor?.Address == donor.Address)
                     {
-                        <input type="text" @bind="editingDonor.Address" />
+                        <MudTextField @bind-Value="editingDonor.Address" Variant="Variant.Outlined"></MudTextField>
                     } 
                     else
                     {
@@ -82,13 +82,13 @@
                     else
                     {
                         <MudButton @onclick="() => EditDonor(donor)" Variant="Variant.Filled" Color="Color.Primary">Edit</MudButton>
-                        <MudButton @onclick="() => Confirm(donor.DonorNumber)" Variant="Variant.Filled" Color="Color.Warning">Delete</MudButton>
+                        <MudButton @onclick="() => Confirm(donor.DonorNumber)" Variant="Variant.Filled" Color="Color.Error">Delete</MudButton>
                     }
                 </td>
             </tr>
         }
     </tbody>
-</table>
+</MudSimpleTable>
 
 @code {
     private List<DonorModel> donors = new();
