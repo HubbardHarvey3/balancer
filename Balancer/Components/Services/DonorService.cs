@@ -10,10 +10,10 @@ namespace Balancer.Components.Services
         private readonly ApplicationDBContext _dbContext;
         private readonly ILogger<DonorService> _logger;
 
-        public DonorService(ApplicationDBContext dbContext, ILogger<DonorService> _logger)
+        public DonorService(ApplicationDBContext dbContext, ILogger<DonorService> logger)
         {
             _dbContext = dbContext;
-            _logger = _logger;
+            _logger = logger;
             _logger.LogInformation("DB Initialized");
         }
 
