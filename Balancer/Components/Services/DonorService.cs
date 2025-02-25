@@ -22,6 +22,12 @@ namespace Balancer.Components.Services
             return await _dbContext.Donors.ToListAsync();
         }
 
+        public async Task<DonorModel?> GetSingleDonor(int donorNumber)
+        {
+            var donor = await _dbContext.Donors.FindAsync(donorNumber);
+            return donor;
+        }
+
         public async Task AddDonorsAsync(DonorModel donor)
         {
             _logger.LogInformation("Adding Donors");

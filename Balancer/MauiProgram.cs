@@ -18,6 +18,8 @@ namespace Balancer
 
             builder.Services.AddMauiBlazorWebView();
             builder.Services.AddScoped<DonorService>();
+            builder.Services.AddScoped<DonorEntryService>();
+            builder.Services.AddScoped<BalancerService>();
             builder.Services.AddSingleton<DialogService>();
             builder.Services.AddMudServices();
 

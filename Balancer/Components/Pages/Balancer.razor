@@ -1,5 +1,10 @@
 ﻿@page "/balancer"
+@inject DonorEntryService DonorEntryService
 @inject DonorService DonorService
+@inject BalancerService BalancerService
+@inject MudBlazor.IDialogService DialogService
+@inject ILogger<Donors> Logger
+@using Microsoft.EntityFrameworkCore
 @using Microsoft.Extensions.Logging
 @using MudBlazor
 @using global::Balancer.Components.Services
@@ -9,47 +14,94 @@
 
 <h3>Balancer</h3>
 
-<MudDatePicker Label="Select Date" @bind-Date="selectedDate" />
+<MudDatePicker DateChanged="UpdateDate" Date="@entryDate" Label="Select Date"  DateFormat="MM/dd/yyyy" /> 
 
-<MudSimpleTable Style="overflow-x: auto;">
-    <thead>
-        <tr>
-            <th>Donor Number</th>
-            <th>Donor Name</th>
-            <th>Cash</th>
-            <th>Check</th>
-            <th>Total</th>
-            <th></th>
-        </tr>
-    </thead>
-</MudSimpleTable>
-
-<MudSimpleTable Style="overflow-x: auto;">
-    <thead>
-        <tr>
-            <th>Donor Name</th>
-            <th>Address</th>
-        </tr>
-    </thead>
+<MudSimpleTable Style="overflow-x: auto;"> 
+    <thead> 
+        <tr> 
+            <th>Donor Number</th> 
+            <th>Donor Name</th> 
+            <th>Cash</th> 
+            <th>Check</th> 
+            <th>Total</th> 
+            <th></th> 
+        </tr> 
+    </thead> 
     <tbody>
-        @foreach (var donor in donors)
-        {
-            <tr>
-                <td>@donor.DonorNumber</td>
-                <td>@donor.Name</td>
-                <td>@donor.Cash</td>
-                <td>@donor.Check</td>
-                <td>@donor.Total</td>
-            </tr>
-        }
+        <tr>
+            <td>
+                <MudTextField OnBlur="@(e => GetDonor(newDonation.DonorNumber))" @bind-Value="newDonation.DonorNumber" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
+            </td>
+            <td>
+                <MudTextField @bind-Value="newDonation.Name" Variant="Variant.Outlined" Margin="Margin.Dense"></MudTextField>
+            </td>
+            <td>
+                <MudTextField 
+                @bind-Value="newDonation.Cash" 
+                Variant="Variant.Outlined" 
+                Margin="Margin.Dense"
+                Error="@hasError" ErrorText="Amount does not balance">
+                </MudTextField>
+            </td>
+            <td>
+                <MudTextField 
+                @bind-Value="newDonation.Check" 
+                Variant="Variant.Outlined" 
+                Margin="Margin.Dense"
+                Error="@hasError" ErrorText="Amount does not balance">
+                </MudTextField>
+            </td>
+            <td>
+                <MudTextField 
+                @bind-Value="newDonation.Total" 
+                Variant="Variant.Outlined" 
+                Margin="Margin.Dense"
+                Error="@hasError" ErrorText="Amount does not balance">
+                </MudTextField>
+            </td>
+            <td>
+                <MudButton OnClick="Save" Variant="Variant.Filled" Color="Color.Primary">Save</MudButton>
+            </td>
+        </tr>
     </tbody>
-</MudSimpleTable>
+</MudSimpleTable> 
+
+<MudSimpleTable Style="overflow-x: auto;"> 
+    <thead> 
+        <tr> 
+            <th>Donor Number</th> 
+            <th>Donor Name</th> 
+            <th>Cash</th> 
+            <th>Check</th> 
+            <th>Total</th> 
+            <th>Date</th> 
+        </tr> 
+    </thead> 
+    <tbody> 
+        @foreach (var entry in donorEntries) 
+        { 
+            <tr> 
+                <td>@entry.DonorNumber</td> 
+                <td>@entry.Name</td> 
+                <td>@entry.Cash</td> 
+                <td>@entry.Check</td> 
+                <td>@entry.Total</td> 
+                <td>@entry.Date</td>
+                <td>
+                    <MudButton OnClick="(e => DeleteDonationEntry(entry))" Variant="Variant.Filled" Color="Color.Error">Delete</MudButton>
+                </td>
+            </tr> 
+        } 
+    </tbody> 
+</MudSimpleTable> 
 
 <hr />
 
 @code {
-    private List<DonationEntryModel> donors = new();
-    private DateTime selectedDate = DateTime.Today;
+    private List<DonationEntryModel> donorEntries = new();
+    private DonationEntryModel newDonation = new();
+    private DateTime? entryDate = DateTime.Today;
+    private bool hasError = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -58,8 +110,56 @@
 
     private async Task LoadDonors()
     {
-        donors = await DonorEntryService.GetDonorEntriesAsync();
+        donorEntries = await DonorEntryService.GetDonorEntriesAsync();
     }
-    
+
+    private async Task Save()
+    {
+        if (BalancerService.BalanceTotal(newDonation.Cash, newDonation.Check, newDonation.Total))
+        {
+            hasError = false;
+            await DonorEntryService.SaveDonationEntry(newDonation);
+            newDonation = new();
+            await LoadDonors();
+            StateHasChanged();
+        }
+        else
+        {
+            hasError = true; 
+            StateHasChanged();
+        }
+    }
+
+    private async Task GetDonor(int donorNumber)
+    {
+        if (entryDate != null)
+        {
+            newDonation.Date = DateOnly.FromDateTime((DateTime)entryDate);
+        }
+        DonorModel? result;
+        result = await DonorService.GetSingleDonor(donorNumber);
+        if (result == null)
+        {
+            Logger.LogInformation("No Donor Find with that Number");
+        }
+        else
+        {
+            newDonation.Name = result.Name;
+        }
+    }
+
+    private async Task DeleteDonationEntry(DonationEntryModel donorEntry)
+    {
+        await DonorEntryService.DeleteDonorEntryAsync(donorEntry.TransactionId);
+        await LoadDonors();
+    }
+
+    private void UpdateDate(DateTime? newDate)
+    {
+        if (newDate != null)
+        {
+            entryDate = newDate;
+        }
+    }
 
 }

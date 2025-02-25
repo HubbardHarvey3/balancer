@@ -21,6 +21,6 @@ namespace Balancer.Components.Models
     
     [Required]
     [Column(TypeName = "Date")]
-    public DateTime Date { get; set; }
+    public DateOnly Date { get; set; }
     }
 }
