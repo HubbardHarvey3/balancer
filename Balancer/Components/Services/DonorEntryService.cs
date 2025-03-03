@@ -22,6 +22,14 @@ namespace Balancer.Components.Services
             return await _dbContext.Donations.ToListAsync();
         }
 
+        public async Task<List<DonationEntryModel>> GetDonorEntriesByDateAsync(DateOnly entryDate)
+        {
+            _logger.LogInformation("Getting Entries for {0}", entryDate);
+            return await _dbContext.Donations
+                .Where(entry => entry.Date.Equals(entryDate))
+                .ToListAsync();
+        }
+
         public async Task SaveDonationEntry(DonationEntryModel donation) 
         {
             _logger.LogInformation("Saving Donation Entry");

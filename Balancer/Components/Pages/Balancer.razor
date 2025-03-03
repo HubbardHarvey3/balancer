@@ -105,12 +105,21 @@
 
     protected override async Task OnInitializedAsync()
     {
-        await LoadDonors();
+        await LoadDonorsByDate(entryDate);
     }
 
-    private async Task LoadDonors()
+    private async Task LoadDonorsByDate(DateTime? entryDate)
     {
-        donorEntries = await DonorEntryService.GetDonorEntriesAsync();
+        DateOnly _date;
+        if (entryDate != null)
+        {
+            _date = DateOnly.FromDateTime((DateTime)entryDate);
+        }
+        else
+        {
+            _date = DateOnly.FromDateTime(DateTime.Today);        
+        }
+        donorEntries = await DonorEntryService.GetDonorEntriesByDateAsync(_date);
     }
 
     private async Task Save()
@@ -120,7 +129,7 @@
             hasError = false;
             await DonorEntryService.SaveDonationEntry(newDonation);
             newDonation = new();
-            await LoadDonors();
+            await LoadDonorsByDate(entryDate);
             StateHasChanged();
         }
         else
@@ -151,14 +160,15 @@
     private async Task DeleteDonationEntry(DonationEntryModel donorEntry)
     {
         await DonorEntryService.DeleteDonorEntryAsync(donorEntry.TransactionId);
-        await LoadDonors();
+        await LoadDonorsByDate(entryDate);
     }
 
-    private void UpdateDate(DateTime? newDate)
+    private async void UpdateDate(DateTime? newDate)
     {
         if (newDate != null)
         {
             entryDate = newDate;
+            await LoadDonorsByDate(entryDate);
         }
     }
 
