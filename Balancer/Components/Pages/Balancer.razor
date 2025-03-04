@@ -97,11 +97,58 @@
 
 <hr />
 
+<MudGrid>
+    <MudItem xs="6">
+        <MudPaper Elevation="2" Class="p-4">
+            <MudTable Items="Denominations" Hover="true" Elevation="1">
+                <HeaderContent>
+                    <MudTh>Denomination</MudTh>
+                    <MudTh>Amount</MudTh>
+                </HeaderContent>
+                <RowTemplate Context="denomination">
+                    <MudTd>@denomination</MudTd>
+                    <MudTd>
+                        <MudTextField @bind-Value="Amounts[denomination]" Placeholder="Enter amount" />
+                    </MudTd>
+                </RowTemplate>
+            </MudTable>
+        </MudPaper>
+    </MudItem>
+
+    <MudItem xs="6">
+        <MudPaper Elevation="2" Class="p-4">
+            <MudTable Items="NumberedInputs" Hover="true" Elevation="1">
+                <HeaderContent>
+                    <MudTh>#</MudTh>
+                    <MudTh>Value</MudTh>
+                </HeaderContent>
+                <RowTemplate Context="index">
+                    <MudTd>@(index + 1)</MudTd>
+                    <MudTd>
+                        <MudTextField Type="Number" @bind-Value="NumberedInputs[index]" Placeholder="Enter value" />
+                    </MudTd>
+                </RowTemplate>
+            </MudTable>
+
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="AddRow" Class="mt-2">Add Row</MudButton>
+
+            <MudTypography Class="mt-2" Variant="H6">
+                Total: @NumberedInputs.Sum(x => x)
+            </MudTypography>
+        </MudPaper>
+    </MudItem>
+</MudGrid>
+
 @code {
     private List<DonationEntryModel> donorEntries = new();
     private DonationEntryModel newDonation = new();
     private DateTime? entryDate = DateTime.Today;
     private bool hasError = false;
+    private List<string> Denominations = new() { "$100", "$50", "$20", "$10", "$5", "$1", "¢50", "¢25", "¢10", "¢5", "¢1" };
+    private Dictionary<string, string> Amounts = new();
+    private List<int> NumberedInputs = new() { 0, 0, 0, 0, 0 };
+
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -120,6 +167,11 @@
             _date = DateOnly.FromDateTime(DateTime.Today);        
         }
         donorEntries = await DonorEntryService.GetDonorEntriesByDateAsync(_date);
+    }
+
+    private void AddRow()
+    {
+        NumberedInputs.Add(0);
     }
 
     private async Task Save()
