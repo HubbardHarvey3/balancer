@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Balancer.Components.Services
 {
-     class DBService
+    class DBService
     {
         private readonly ApplicationDBContext _context;
 

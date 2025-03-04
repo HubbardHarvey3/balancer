@@ -1,6 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Balancer.Components.Data;
+﻿using Balancer.Components.Data;
 using Balancer.Components.Models;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace Balancer.Components.Services

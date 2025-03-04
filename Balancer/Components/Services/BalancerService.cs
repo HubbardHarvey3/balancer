@@ -17,10 +17,10 @@ namespace Balancer.Components.Services
                 _logger.LogInformation("Total is NOT balanced");
                 return false;
             }
-            else 
+            else
             {
                 _logger.LogInformation("Total is balanced");
-                return true;    
+                return true;
             }
 
         }

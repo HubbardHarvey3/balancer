@@ -1,5 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
-using Balancer.Components.Services;
+﻿using Balancer.Components.Services;
+using Microsoft.Extensions.Logging;
 using MudBlazor.Services;
 
 namespace Balancer

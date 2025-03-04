@@ -1,6 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Balancer.Components.Data;
+﻿using Balancer.Components.Data;
 using Balancer.Components.Models;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace Balancer.Components.Services
@@ -30,7 +30,7 @@ namespace Balancer.Components.Services
                 .ToListAsync();
         }
 
-        public async Task SaveDonationEntry(DonationEntryModel donation) 
+        public async Task SaveDonationEntry(DonationEntryModel donation)
         {
             _logger.LogInformation("Saving Donation Entry");
             _dbContext.Donations.Add(donation);
@@ -41,7 +41,7 @@ namespace Balancer.Components.Services
         {
             var result = await _dbContext.Donations.FindAsync(entryId);
             if (result != null)
-            { 
+            {
                 _logger.LogInformation("Deleting Donation Entry : {id}", entryId);
                 _dbContext.Donations.Remove(result);
                 await _dbContext.SaveChangesAsync();

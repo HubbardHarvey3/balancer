@@ -1,5 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Balancer.Components.Models;
+﻿using Balancer.Components.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Balancer.Components.Data
 {
@@ -8,7 +8,7 @@ namespace Balancer.Components.Data
         public DbSet<DonorModel> Donors { get; set; }
         public DbSet<DonationEntryModel> Donations { get; set; }
 
-        public ApplicationDBContext(DbContextOptions<ApplicationDBContext> options) 
+        public ApplicationDBContext(DbContextOptions<ApplicationDBContext> options)
             : base(options) { }
     }
 }
