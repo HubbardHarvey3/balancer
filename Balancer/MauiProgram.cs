@@ -21,6 +21,7 @@ namespace Balancer
             builder.Services.AddScoped<DonorEntryService>();
             builder.Services.AddScoped<BalancerService>();
             builder.Services.AddSingleton<DialogService>();
+            builder.Services.AddSingleton<CashService>();
             builder.Services.AddMudServices();
 
             // Register Database Services

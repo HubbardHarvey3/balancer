@@ -4,13 +4,13 @@
 @inject BalancerService BalancerService
 @inject MudBlazor.IDialogService DialogService
 @inject ILogger<Donors> Logger
+@inject CashService CashService
 @using Microsoft.EntityFrameworkCore
 @using Microsoft.Extensions.Logging
 @using MudBlazor
 @using Balancer.Components.Services
 @using Balancer.Components.Models
 @using Balancer.Components.Data
-@namespace Balancer.Components.Pages
 
 <h3>Balancer</h3>
 
@@ -100,28 +100,40 @@
 <MudGrid>
     <MudItem xs="6">
         <h4>Cash</h4>
+        <h5>Total Cash : @TotalCashAmount.ToString("C")</h5>
         <MudSimpleTable Style="overflow-x: auto;" Dense=true>
             <thead>
                 <th>Denominations</th>
+                <th>Number of Bills/Coins</th>
             </thead>
             <tbody>
-                @foreach (var denomination in Denominations)
+                @foreach (var denomination in CashService.DenominationAmounts.Keys)
                 {
                     <tr>
-						<td>@denomination</td>
-						<td>
-                            <MudNumericField @bind-Value="NumberedInputs"></MudNumericField>
+                        <td>@denomination</td>
+                        <td>
+                            <MudNumericField 
+                                T="int"
+                                Value="@CashService.DenominationAmounts[denomination]"
+                                ValueChanged="(newValue) => UpdateCashDenomination(denomination, newValue)"
+                                >
+                            </MudNumericField>
                         </td>
-					</tr>
+                    </tr>
                 }
             </tbody>
-		</MudSimpleTable>
+        </MudSimpleTable>
     </MudItem>
     <MudItem xs="6">
         <h4>Check</h4>
-		<MudSimpleTable>
-           
-		</MudSimpleTable>
+        <MudSimpleTable Style="overflow-x: auto;" Dense=true>
+            <thead>
+                <th>Check Amounts</th>
+            </thead>
+            <tbody>
+
+            </tbody>
+        </MudSimpleTable>
     </MudItem>
 </MudGrid>
 
@@ -130,9 +142,8 @@
     private DonationEntryModel newDonation = new();
     private DateTime? entryDate = DateTime.Today;
     private bool hasError = false;
-    private List<string> Denominations = new() { "$100", "$50", "$20", "$10", "$5", "$1", "¢50", "¢25", "¢10", "¢5", "¢1" };
-    private Dictionary<string, string> Amounts = new();
-    private List<int> NumberedInputs = new() { 0, 0, 0, 0, 0 };
+    private decimal TotalCashAmount = 0;
+
 
     protected override async Task OnInitializedAsync()
     {
@@ -152,13 +163,8 @@
         }
         if (donorEntries != null)
         {
-			donorEntries = await DonorEntryService.GetDonorEntriesByDateAsync(_date);
+            donorEntries = await DonorEntryService.GetDonorEntriesByDateAsync(_date);
         }
-    }
-
-    private void AddRow()
-    {
-        NumberedInputs.Add(0);
     }
 
     private async Task Save()
@@ -209,6 +215,17 @@
             entryDate = newDate;
             await LoadDonorsByDate(entryDate);
         }
+    }
+
+    private void UpdateCashDenomination(string denomination, int newValue)
+    {
+        CashService.DenominationAmounts[denomination] = newValue;
+        UpdateCashTotal();
+    }
+
+    private void UpdateCashTotal()
+    {
+        TotalCashAmount = CashService.GetTotalCashAmount();    
     }
 
 }
