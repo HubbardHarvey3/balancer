@@ -5,12 +5,12 @@ using Microsoft.Extensions.Logging;
 
 namespace Balancer.Components.Services
 {
-    internal class DonorEntryService
+    internal class DonationEntryService
     {
         private readonly ApplicationDBContext _dbContext;
-        private readonly ILogger<DonorEntryService> _logger;
+        private readonly ILogger<DonationEntryService> _logger;
 
-        public DonorEntryService(ApplicationDBContext dbContext, ILogger<DonorEntryService> logger)
+        public DonationEntryService(ApplicationDBContext dbContext, ILogger<DonationEntryService> logger)
         {
             _dbContext = dbContext;
             _logger = logger;

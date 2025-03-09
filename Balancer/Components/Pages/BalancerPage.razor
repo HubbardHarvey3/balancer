@@ -1,5 +1,5 @@
 ﻿@page "/balancer"
-@inject DonorEntryService DonorEntryService
+@inject DonationEntryService DonationEntryService
 @inject DonorService DonorService
 @inject BalancerService BalancerService
 @inject MudBlazor.IDialogService DialogService
@@ -100,7 +100,8 @@
 <MudGrid>
     <MudItem xs="6">
         <h4>Cash</h4>
-        <h5>Total Cash : @TotalCashAmount.ToString("C")</h5>
+        <h5>Total Cash From Denomination Table: @TotalCashAmount.ToString("C")</h5>
+        <h5>Total Cash From Entries Table : @TotalEntryCashAmount.ToString("C")</h5>
         <MudSimpleTable Style="overflow-x: auto;" Dense=true>
             <thead>
                 <th>Denominations</th>
@@ -113,10 +114,10 @@
                         <td>@denomination</td>
                         <td>
                             <MudNumericField 
-                                T="int"
-                                Value="@CashService.DenominationAmounts[denomination]"
-                                ValueChanged="(newValue) => UpdateCashDenomination(denomination, newValue)"
-                                >
+                            T="int"
+                            Value="@CashService.DenominationAmounts[denomination]"
+                            ValueChanged="(newValue) => UpdateCashDenomination(denomination, newValue)"
+                            >
                             </MudNumericField>
                         </td>
                     </tr>
@@ -143,6 +144,7 @@
     private DateTime? entryDate = DateTime.Today;
     private bool hasError = false;
     private decimal TotalCashAmount = 0;
+    private decimal TotalEntryCashAmount = 0;
 
 
     protected override async Task OnInitializedAsync()
@@ -163,7 +165,7 @@
         }
         if (donorEntries != null)
         {
-            donorEntries = await DonorEntryService.GetDonorEntriesByDateAsync(_date);
+            donorEntries = await DonationEntryService.GetDonorEntriesByDateAsync(_date);
         }
     }
 
@@ -172,7 +174,7 @@
         if (BalancerService.BalanceTotal(newDonation.Cash, newDonation.Check, newDonation.Total))
         {
             hasError = false;
-            await DonorEntryService.SaveDonationEntry(newDonation);
+            await DonationEntryService.SaveDonationEntry(newDonation);
             newDonation = new();
             await LoadDonorsByDate(entryDate);
             StateHasChanged();
@@ -204,7 +206,7 @@
 
     private async Task DeleteDonationEntry(DonationEntryModel donorEntry)
     {
-        await DonorEntryService.DeleteDonorEntryAsync(donorEntry.TransactionId);
+        await DonationEntryService.DeleteDonorEntryAsync(donorEntry.TransactionId);
         await LoadDonorsByDate(entryDate);
     }
 
@@ -214,6 +216,7 @@
         {
             entryDate = newDate;
             await LoadDonorsByDate(entryDate);
+            UpdateEntryCashTotal();
         }
     }
 
@@ -225,7 +228,14 @@
 
     private void UpdateCashTotal()
     {
-        TotalCashAmount = CashService.GetTotalCashAmount();    
+        TotalCashAmount = CashService.GetTotalCashAmount();
+    }
+    private async void UpdateEntryCashTotal()
+    {
+        if (entryDate != null)
+        {
+            TotalEntryCashAmount = await CashService.GetTotalDonationCashAmount(DateOnly.FromDateTime((DateTime)entryDate));
+        }
     }
 
 }

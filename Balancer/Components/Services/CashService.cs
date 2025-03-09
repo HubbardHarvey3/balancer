@@ -1,16 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿
+using Balancer.Components.Models;
 
 namespace Balancer.Components.Services
 {
-    internal class CashService
+    internal class CashService 
     {
         public Dictionary<string, int> DenominationAmounts { get; private set; }
-        public CashService()
+        private readonly DonationEntryService _donationEntryService;
+
+        public CashService(DonationEntryService donationEntryService)
         {
+            _donationEntryService = donationEntryService;
             DenominationAmounts = new()
             {
                 { "$100", 0 }, { "$50", 0 }, { "$20", 0 }, { "$10", 0 },
@@ -42,5 +42,18 @@ namespace Balancer.Components.Services
             }
             return total;
         }
+
+        public async Task<decimal> GetTotalDonationCashAmount(DateOnly date)
+        {
+            decimal total = 0;
+            var resultsList = new List<DonationEntryModel>();
+            resultsList = await _donationEntryService.GetDonorEntriesByDateAsync(date);
+            foreach (var entry in resultsList)
+            {
+                total = total + entry.Cash;
+            }
+            return total;
+        }
     }
+
 }
