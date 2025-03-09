@@ -33,11 +33,11 @@ namespace Balancer
                 var dbService = scope.ServiceProvider.GetRequiredService<DBService>();
                 dbService.InitializeDatabase();
             }
-            builder.Logging.SetMinimumLevel(LogLevel.Information);
 
 #if DEBUG
             builder.Services.AddBlazorWebViewDeveloperTools();
             builder.Logging.AddDebug();
+            builder.Logging.SetMinimumLevel(LogLevel.Trace);
 #endif
 
             return builder.Build();
