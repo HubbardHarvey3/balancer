@@ -1,5 +1,4 @@
-﻿
-using Balancer.Components.Models;
+﻿using Balancer.Components.Models;
 
 namespace Balancer.Components.Services
 {

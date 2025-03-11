@@ -22,6 +22,7 @@ namespace Balancer
             builder.Services.AddScoped<BalancerService>();
             builder.Services.AddSingleton<DialogService>();
             builder.Services.AddScoped<CashService>();
+            builder.Services.AddScoped<CheckService>();
             builder.Services.AddMudServices();
 
             // Register Database Services
@@ -37,7 +38,7 @@ namespace Balancer
 #if DEBUG
             builder.Services.AddBlazorWebViewDeveloperTools();
             builder.Logging.AddDebug();
-            builder.Logging.SetMinimumLevel(LogLevel.Trace);
+            builder.Logging.SetMinimumLevel(LogLevel.Information);
 #endif
 
             return builder.Build();

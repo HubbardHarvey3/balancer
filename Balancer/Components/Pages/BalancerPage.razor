@@ -5,6 +5,7 @@
 @inject MudBlazor.IDialogService DialogService
 @inject ILogger<Donors> Logger
 @inject CashService CashService
+@inject CheckService CheckService
 @using Microsoft.EntityFrameworkCore
 @using Microsoft.Extensions.Logging
 @using MudBlazor
@@ -127,14 +128,29 @@
     </MudItem>
     <MudItem xs="6">
         <h4>Check</h4>
+        <h6>Total Check From Denomination Table: @TotalCheckAmount.ToString("C")</h6>
+        <h6>Total Check From Entries Table : @TotalEntryCheckAmount.ToString("C")</h6>
         <MudSimpleTable Style="overflow-x: auto;" Dense=true>
             <thead>
                 <th>Check Amounts</th>
             </thead>
             <tbody>
-
+                @for (int i=0; i < CheckEntryList.Count; i++)
+                {
+                    int capturedIndex = i;
+                    <tr>
+                        <td>
+                            <MudNumericField 
+                            T="decimal"  
+                            Value="@CheckEntryList[capturedIndex]"
+                            ValueChanged="(newValue) => UpdateCheckTotal(newValue, capturedIndex)"
+                            Variant="Variant.Outlined" />
+                        </td>
+                    </tr>
+                }
             </tbody>
         </MudSimpleTable>
+        <MudButton OnClick="AddCheckAmount" Variant="Variant.Filled" Color="Color.Primary">Add Check</MudButton>
     </MudItem>
 </MudGrid>
 
@@ -145,6 +161,10 @@
     private bool hasError = false;
     private decimal TotalCashAmount = 0;
     private decimal TotalEntryCashAmount = 0;
+    private decimal TotalCheckAmount = 0;
+    private decimal TotalEntryCheckAmount { get; set; } = 0;
+    private List<decimal> CheckEntryList = new List<decimal> { 0.00m, 0.00m, 0.00m };
+
 
 
     protected override async Task OnInitializedAsync()
@@ -238,6 +258,26 @@
         {
             TotalEntryCashAmount = await CashService.GetTotalDonationCashAmount(DateOnly.FromDateTime((DateTime)entryDate));
         }
+    }
+
+    private void AddCheckAmount()
+    {
+        CheckEntryList.Add(0m); 
+        UpdateCheckTotal(null, null);
+        for (int i = 0; i < CheckEntryList.Count(); i++)
+        {
+            Logger.LogInformation("LocalList entry {1} is {2}", i, CheckEntryList);    
+        }
+    }
+
+    private void UpdateCheckTotal(decimal? newValue, int? index)
+    {
+        if (index != null && newValue != null)
+        {
+            CheckEntryList[(int)index] = (decimal)newValue;    
+        } 
+
+        TotalEntryCheckAmount = CheckEntryList.Sum();
     }
 
 }
