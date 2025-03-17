@@ -5,16 +5,27 @@ VisualStudioVersion = 17.12.35707.178
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Balancer", "Balancer\Balancer.csproj", "{56D65F70-A586-447D-B031-8367F09EBAF5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Balancer.Tests", "Balancer.Tests\Balancer.Tests.csproj", "{760290E9-A6C8-4971-A553-160E2F5CF1E7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
+		WinBuild|Any CPU = WinBuild|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{56D65F70-A586-447D-B031-8367F09EBAF5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{56D65F70-A586-447D-B031-8367F09EBAF5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{56D65F70-A586-447D-B031-8367F09EBAF5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{56D65F70-A586-447D-B031-8367F09EBAF5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{56D65F70-A586-447D-B031-8367F09EBAF5}.WinBuild|Any CPU.ActiveCfg = WinBuild|Any CPU
+		{56D65F70-A586-447D-B031-8367F09EBAF5}.WinBuild|Any CPU.Build.0 = WinBuild|Any CPU
+		{760290E9-A6C8-4971-A553-160E2F5CF1E7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{760290E9-A6C8-4971-A553-160E2F5CF1E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{760290E9-A6C8-4971-A553-160E2F5CF1E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{760290E9-A6C8-4971-A553-160E2F5CF1E7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{760290E9-A6C8-4971-A553-160E2F5CF1E7}.WinBuild|Any CPU.ActiveCfg = Debug|Any CPU
+		{760290E9-A6C8-4971-A553-160E2F5CF1E7}.WinBuild|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
