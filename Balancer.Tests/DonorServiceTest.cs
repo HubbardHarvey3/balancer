@@ -1,6 +1,11 @@
 ﻿using Balancer.Components.Services;
 using Balancer.Components.Models;
 using Moq;
+using System.Numerics;
+using System.Net.Sockets;
+using Microsoft.EntityFrameworkCore;
+using Balancer.Components.Data;
+using Microsoft.Extensions.Logging;
 
 namespace Balancer.Tests
 {
@@ -29,5 +34,41 @@ namespace Balancer.Tests
 
             Assert.Equal(mockDonors, result);
         }
+
+        [Fact]
+        public async Task GetSingleDonorAsync_ReturnOneDonor()
+        {
+            var mockDonor = new DonorModel()
+            {
+                DonorNumber = 1,
+                Name = "Lone Survivor",
+                TotalDonations = 100.50m,
+                Address = "12 Sanctuary Hills"
+            };
+
+            _mockDonorService.Setup(s => s.GetSingleDonorAsync(1)).ReturnsAsync(mockDonor);
+
+            var testResult = await _mockDonorService.Object.GetSingleDonorAsync(1);
+
+            Assert.Equal(mockDonor, testResult);
+        }
+
+        [Fact]
+        public async Task AddDonorsAsync_CallsAddMethod()
+        {
+            var mockDonorService = new Mock<IDonorService>(); // Mock the interface
+            var newDonor = new DonorModel
+            {
+                DonorNumber = 1,
+                Name = "John Doe",
+                TotalDonations = 150.50m,
+                Address = "123 Main St"
+            };
+
+            await mockDonorService.Object.AddDonorsAsync(newDonor);
+
+            mockDonorService.Verify(s => s.AddDonorsAsync(It.Is<DonorModel>(d => d.DonorNumber == 1)), Times.Once);
+        }
+
     }
 }

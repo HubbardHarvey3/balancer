@@ -2,62 +2,66 @@ using Balancer.Components.Models;
 using Balancer.Components.Services;
 using Moq;
 
-public class CashServiceTests
+
+namespace Balancer.Tests
 {
-    private readonly Mock<IDonationEntryService> _mockDonationEntryService;
-    private readonly CashService _cashService;
-
-    public CashServiceTests()
+    public class CashServiceTests
     {
-        _mockDonationEntryService = new Mock<IDonationEntryService>();
-        _cashService = new CashService(_mockDonationEntryService.Object);
-    }
+        private readonly Mock<IDonationEntryService> _mockDonationEntryService;
+        private readonly CashService _cashService;
 
-    [Fact]
-    public void UpdateDenomination_ValidDenomination_UpdatesAmount()
-    {
-        _cashService.UpdateDenomination("$20", 5);
+        public CashServiceTests()
+        {
+            _mockDonationEntryService = new Mock<IDonationEntryService>();
+            _cashService = new CashService(_mockDonationEntryService.Object);
+        }
 
-        Assert.Equal(5, _cashService.DenominationAmounts["$20"]);
-    }
+        [Fact]
+        public void UpdateDenomination_ValidDenomination_UpdatesAmount()
+        {
+            _cashService.UpdateDenomination("$20", 5);
 
-    [Fact]
-    public void UpdateDenomination_InvalidDenomination_DoesNotThrow()
-    {
-        var exception = Record.Exception(() => _cashService.UpdateDenomination("Invalid", 5));
+            Assert.Equal(5, _cashService.DenominationAmounts["$20"]);
+        }
 
-        Assert.Null(exception);
-    }
+        [Fact]
+        public void UpdateDenomination_InvalidDenomination_DoesNotThrow()
+        {
+            var exception = Record.Exception(() => _cashService.UpdateDenomination("Invalid", 5));
 
-    [Fact]
-    public void GetTotalCashAmount_CalculatesCorrectTotal()
-    {
-        _cashService.UpdateDenomination("$100", 1);
-        _cashService.UpdateDenomination("$50", 2);
-        _cashService.UpdateDenomination("¢25", 4); // 4 quarters = $1
+            Assert.Null(exception);
+        }
 
-        var total = _cashService.GetTotalCashAmount();
+        [Fact]
+        public void GetTotalCashAmount_CalculatesCorrectTotal()
+        {
+            _cashService.UpdateDenomination("$100", 1);
+            _cashService.UpdateDenomination("$50", 2);
+            _cashService.UpdateDenomination("¢25", 4); // 4 quarters = $1
 
-        Assert.Equal(201m, total); // 100 + (50*2) + 1
-    }
+            var total = _cashService.GetTotalCashAmount();
 
-    [Fact]
-    public async Task GetTotalDonationCashAmount_ReturnsCorrectSum()
-    {
-        var testDate = new DateOnly(2025, 3, 17);
-        var mockDonations = new List<DonationEntryModel>
+            Assert.Equal(201m, total); // 100 + (50*2) + 1
+        }
+
+        [Fact]
+        public async Task GetTotalDonationCashAmount_ReturnsCorrectSum()
+        {
+            var testDate = new DateOnly(2025, 3, 17);
+            var mockDonations = new List<DonationEntryModel>
         {
             new() { Cash = 50m },
             new() { Cash = 20m },
             new() { Cash = 30m }
         };
 
-        _mockDonationEntryService
-            .Setup(s => s.GetDonorEntriesByDateAsync(testDate))
-            .ReturnsAsync(mockDonations);
+            _mockDonationEntryService
+                .Setup(s => s.GetDonorEntriesByDateAsync(testDate))
+                .ReturnsAsync(mockDonations);
 
-        var total = await _cashService.GetTotalDonationCashAmount(testDate);
+            var total = await _cashService.GetTotalDonationCashAmount(testDate);
 
-        Assert.Equal(100m, total);
+            Assert.Equal(100m, total);
+        }
     }
 }

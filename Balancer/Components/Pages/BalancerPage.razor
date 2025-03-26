@@ -215,7 +215,7 @@
             newDonation.Date = DateOnly.FromDateTime((DateTime)entryDate);
         }
         DonorModel? result;
-        result = await DonorService.GetSingleDonor(donorNumber);
+        result = await DonorService.GetSingleDonorAsync(donorNumber);
         if (result == null)
         {
             Logger.LogInformation("No Donor Find with that Number");
