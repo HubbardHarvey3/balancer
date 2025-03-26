@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Balancer.Components.Services
 {
-    internal class DonationEntryService
+    internal class DonationEntryService : IDonationEntryService
     {
         private readonly ApplicationDBContext _dbContext;
         private readonly ILogger<DonationEntryService> _logger;

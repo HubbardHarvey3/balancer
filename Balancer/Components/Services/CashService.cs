@@ -5,9 +5,9 @@ namespace Balancer.Components.Services
     internal class CashService 
     {
         public Dictionary<string, int> DenominationAmounts { get; private set; }
-        private readonly DonationEntryService _donationEntryService;
+        private readonly IDonationEntryService _donationEntryService;
 
-        public CashService(DonationEntryService donationEntryService)
+        public CashService(IDonationEntryService donationEntryService)
         {
             _donationEntryService = donationEntryService;
             DenominationAmounts = new()

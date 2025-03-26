@@ -57,6 +57,7 @@
 
 	<ItemGroup>
         <InternalsVisibleTo Include="Balancer.Tests" />
+		<InternalsVisibleTo Include="DynamicProxyGenAssembly2"/>
     </ItemGroup>
 
 

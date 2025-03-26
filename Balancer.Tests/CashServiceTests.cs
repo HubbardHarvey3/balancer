@@ -1,19 +1,15 @@
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using Balancer.Components.Models;
 using Balancer.Components.Services;
 using Moq;
-using Xunit;
 
 public class CashServiceTests
 {
-    private readonly Mock<DonationEntryService> _mockDonationEntryService;
+    private readonly Mock<IDonationEntryService> _mockDonationEntryService;
     private readonly CashService _cashService;
 
     public CashServiceTests()
     {
-        _mockDonationEntryService = new Mock<DonationEntryService>();
+        _mockDonationEntryService = new Mock<IDonationEntryService>();
         _cashService = new CashService(_mockDonationEntryService.Object);
     }
 
