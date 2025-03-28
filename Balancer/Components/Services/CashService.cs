@@ -2,7 +2,7 @@
 
 namespace Balancer.Components.Services
 {
-    internal class CashService 
+    internal class CashService
     {
         public Dictionary<string, int> DenominationAmounts { get; private set; }
         private readonly IDonationEntryService _donationEntryService;
