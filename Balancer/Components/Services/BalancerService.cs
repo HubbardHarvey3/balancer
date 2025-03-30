@@ -2,7 +2,7 @@
 
 namespace Balancer.Components.Services
 {
-    internal class BalancerService
+    internal class BalancerService : IBalancerService
     {
         private readonly ILogger<BalancerService> _logger;
 

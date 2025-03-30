@@ -191,8 +191,11 @@
 
     private async Task Save()
     {
-        if (BalancerService.BalanceTotal(newDonation.Cash, newDonation.Check, newDonation.Total))
-        {
+        if (
+            BalancerService.BalanceTotal(newDonation.Cash, newDonation.Check, newDonation.Total) && 
+            !string.IsNullOrEmpty(newDonation.Name)
+        )
+    {
             hasError = false;
             await DonationEntryService.SaveDonationEntry(newDonation);
             newDonation = new();

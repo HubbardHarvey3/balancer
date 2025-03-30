@@ -9,7 +9,7 @@ namespace Balancer.Components.Models
         public Guid TransactionId { get; set; } = Guid.NewGuid();
 
         [Required]
-        public string Name { get; set; }
+        public string? Name { get; set;}
 
         public int DonorNumber { get; set; }
 

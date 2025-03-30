@@ -147,7 +147,7 @@
         parameters.Add("ButtonText", "Yes");
         var dialogresult = await DialogService.ShowAsync<ConfirmDeleteDialog>("Confirm", parameters);
         var result = await dialogresult.Result;
-        if (!result.Canceled)
+        if (result != null && !result.Canceled)
         {
             await DeleteDonor(donorNumber);
         }
