@@ -1,7 +1,7 @@
 ﻿@page "/balancer"
-@inject DonationEntryService DonationEntryService
-@inject DonorService DonorService
-@inject BalancerService BalancerService
+@inject IDonationEntryService DonationEntryService
+@inject IDonorService DonorService
+@inject IBalancerService BalancerService
 @inject MudBlazor.IDialogService DialogService
 @inject ILogger<Donors> Logger
 @inject CashService CashService
@@ -268,7 +268,7 @@
 
     private void AddCheckAmount()
     {
-        CheckEntryList.Add(0m); 
+        CheckEntryList.Add(0.00m); 
         UpdateCheckTotal(null, null);
     }
 

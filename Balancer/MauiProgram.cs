@@ -17,9 +17,9 @@ namespace Balancer
                 });
 
             builder.Services.AddMauiBlazorWebView();
-            builder.Services.AddScoped<DonorService>();
-            builder.Services.AddScoped<DonationEntryService>();
-            builder.Services.AddScoped<BalancerService>();
+            builder.Services.AddScoped<IDonorService, DonorService>();
+            builder.Services.AddScoped<IDonationEntryService, DonationEntryService>();
+            builder.Services.AddScoped<IBalancerService, BalancerService>();
             builder.Services.AddSingleton<DialogService>();
             builder.Services.AddScoped<CashService>();
             builder.Services.AddScoped<CheckService>();
@@ -38,7 +38,7 @@ namespace Balancer
 #if DEBUG
             builder.Services.AddBlazorWebViewDeveloperTools();
             builder.Logging.AddDebug();
-            builder.Logging.SetMinimumLevel(LogLevel.Trace);
+            builder.Logging.SetMinimumLevel(LogLevel.Information);
 #endif
 
             return builder.Build();

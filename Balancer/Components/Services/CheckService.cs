@@ -5,8 +5,8 @@ namespace Balancer.Components.Services
     internal class CheckService
     {
         public List<decimal> _checkEntryAmounts;
-        private readonly DonationEntryService _donationEntryService;
-        public CheckService(DonationEntryService donationEntryService)
+        private readonly IDonationEntryService _donationEntryService;
+        public CheckService(IDonationEntryService donationEntryService)
         {
             _donationEntryService = donationEntryService;
             _checkEntryAmounts = new List<decimal> { 0.00m, 0.00m, 0.00m };
