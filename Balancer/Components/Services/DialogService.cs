@@ -9,7 +9,13 @@
             string cancelButton = "No"
         )
         {
-            return Application.Current.MainPage.DisplayAlert(title, message, confirmButton, cancelButton);
+            var mainPage = Application.Current?.Windows.FirstOrDefault()?.Page;
+            if (mainPage != null)
+            {
+                return mainPage.DisplayAlert(title, message, confirmButton, cancelButton);
+            }
+
+            return Task.FromResult(false);
         }
     }
 }
