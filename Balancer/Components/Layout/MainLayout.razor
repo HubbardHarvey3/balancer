@@ -8,12 +8,9 @@
 @* Needed for snackbars *@
 <MudSnackbarProvider />
 
+<NavMenu />
 <div class="page">
-    <div class="sidebar">
-        <NavMenu />
-    </div>
-
-    <main>
+    <main class="content px-4" style="margin-top: 64px;"> @* Adjust top margin to prevent overlap *@
         <article class="content px-4">
             @Body
         </article>
