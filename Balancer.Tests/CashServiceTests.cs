@@ -2,7 +2,6 @@ using Balancer.Components.Models;
 using Balancer.Components.Services;
 using Moq;
 
-
 namespace Balancer.Tests
 {
     public class CashServiceTests

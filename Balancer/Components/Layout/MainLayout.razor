@@ -1,7 +1,7 @@
 ﻿@inherits LayoutComponentBase
 
 @* Required *@
-<MudThemeProvider />
+<MudThemeProvider Theme="BalancerTheme" />
 <MudPopoverProvider />
 @* Needed for dialogs *@
 <MudDialogProvider />
@@ -16,3 +16,20 @@
         </article>
     </main>
 </div>
+
+@code{
+    MudTheme BalancerTheme = new MudTheme()
+    {
+        PaletteLight = new PaletteLight()
+        {
+            Primary = "1A1B41",
+            Secondary = "C2E7DA",
+            AppbarBackground = "6290C3",
+        },
+        LayoutProperties = new LayoutProperties()
+        {
+            DrawerWidthLeft = "260px",
+            DrawerWidthRight = "300px"
+        }
+    };
+}
