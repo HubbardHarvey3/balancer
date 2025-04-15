@@ -22,5 +22,16 @@ namespace Balancer.Components.Services
             }
             return total;
         }
+        public bool IsCheckAmountsInError(decimal checkAmounts, decimal donorCheckAmounts)
+        {
+            if (checkAmounts == donorCheckAmounts)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
     }
 }

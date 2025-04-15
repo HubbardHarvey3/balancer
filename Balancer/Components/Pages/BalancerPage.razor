@@ -41,7 +41,7 @@
                 @bind-Value="newDonation.Cash" 
                 Variant="Variant.Outlined" 
                 Margin="Margin.Dense"
-                Error="@hasError" ErrorText="Amount does not balance">
+                Error="@donorEntryHasError" ErrorText="Amount does not balance">
                 </MudTextField>
             </td>
             <td>
@@ -49,7 +49,7 @@
                 @bind-Value="newDonation.Check" 
                 Variant="Variant.Outlined" 
                 Margin="Margin.Dense"
-                Error="@hasError" ErrorText="Amount does not balance">
+                Error="@donorEntryHasError" ErrorText="Amount does not balance">
                 </MudTextField>
             </td>
             <td>
@@ -57,7 +57,7 @@
                 @bind-Value="newDonation.Total" 
                 Variant="Variant.Outlined" 
                 Margin="Margin.Dense"
-                Error="@hasError" ErrorText="Amount does not balance">
+                Error="@donorEntryHasError" ErrorText="Amount does not balance">
                 </MudTextField>
             </td>
             <td>
@@ -100,9 +100,17 @@
 
 <MudGrid>
     <MudItem xs="6">
-        <h4>Cash</h4>
-        <h6>Total Cash From Entries Table : @TotalEntryCashAmount.ToString("C")</h6>
-        <h6>Total Cash From Denomination Table: @TotalCashAmount.ToString("C")</h6>
+        <MudItem xs="6">
+            <MudText Color="@(cashAmountError ? Color.Error : Color.Inherit)" Typo="Typo.h4">Cash</MudText> 
+            <MudText 
+            Color="@(cashAmountError ? Color.Error : Color.Inherit)">
+                Total Cash From Entries Table : @TotalEntryCashAmount.ToString("C")
+            </MudText>
+            <MudText 
+            Color="@(cashAmountError ? Color.Error : Color.Inherit)">
+                Total Cash From Entries Table : @TotalCashAmount.ToString("C")
+            </MudText>
+        </MudItem>
         <MudSimpleTable Style="overflow-x: auto;" Dense=true>
             <thead>
                 <th>Denominations</th>
@@ -116,9 +124,9 @@
                         <td>
                             <MudNumericField 
                             T="int"
+                            Min="0"
                             Value="@CashService.DenominationAmounts[denomination]"
-                            ValueChanged="(newValue) => UpdateCashDenomination(denomination, newValue)"
-                            >
+                            ValueChanged="(newValue) => UpdateCashDenomination(denomination, newValue)">
                             </MudNumericField>
                         </td>
                     </tr>
@@ -127,9 +135,17 @@
         </MudSimpleTable>
     </MudItem>
     <MudItem xs="6">
-        <h4>Check</h4>
-        <h6>Total Check Amounts From Entries Table : @TotalEntryCheckAmount.ToString("C")</h6>
-        <h6>Total Check Amounts From Below Table: @TotalCheckAmount.ToString("C")</h6>
+        <MudItem xs="6">
+            <MudText Color="@(checkAmountError ? Color.Error : Color.Inherit)" Typo="Typo.h4">Check</MudText> 
+            <MudText 
+            Color="@(checkAmountError ? Color.Error : Color.Inherit)">
+                Total Check Amounts From Entries Table : @TotalEntryCheckAmount.ToString("C")           
+            </MudText>
+            <MudText 
+            Color="@(checkAmountError ? Color.Error : Color.Inherit)">
+                Total Check Amounts From Below Table: @TotalCheckAmount.ToString("C")
+            </MudText>
+        </MudItem>
         <MudSimpleTable Style="overflow-x: auto;" Dense=true>
             <thead>
                 <th>Check Amounts</th>
@@ -158,12 +174,14 @@
     private List<DonationEntryModel> donorEntries = new();
     private DonationEntryModel newDonation = new();
     private DateTime? entryDate = DateTime.Today;
-    private bool hasError = false;
+    private bool donorEntryHasError = false;
+    private bool checkAmountError = false;
+    private bool cashAmountError = false;
     private decimal TotalCashAmount = 0;
     private decimal TotalEntryCashAmount = 0;
     private decimal TotalCheckAmount = 0;
     private decimal TotalEntryCheckAmount { get; set; } = 0;
-    private List<decimal> CheckEntryList = new List<decimal> { 0.00m, 0.00m, 0.00m };
+    private List<decimal> CheckEntryList = new List<decimal> { 0.00m, 0.00m, 0.00m, 0.00m, 0.00m, 0.00m, 0.00m, 0.00m, 0.00m, 0.00m };
 
 
 
@@ -195,8 +213,8 @@
             BalancerService.BalanceTotal(newDonation.Cash, newDonation.Check, newDonation.Total) && 
             !string.IsNullOrEmpty(newDonation.Name)
         )
-    {
-            hasError = false;
+        {
+            donorEntryHasError = false;
             await DonationEntryService.SaveDonationEntry(newDonation);
             newDonation = new();
             await LoadDonorsByDate(entryDate);
@@ -206,7 +224,7 @@
         }
         else
         {
-            hasError = true; 
+            donorEntryHasError = true; 
             StateHasChanged();
         }
     }
@@ -252,12 +270,15 @@
     {
         CashService.DenominationAmounts[denomination] = newValue;
         UpdateCashTotal();
+        cashAmountError = CashService.IsCashAmountsInError(TotalCashAmount, TotalEntryCashAmount);
+        StateHasChanged();
     }
 
     private void UpdateCashTotal()
     {
         TotalCashAmount = CashService.GetTotalCashAmount();
     }
+
     private async void UpdateEntryCashTotal()
     {
         if (entryDate != null)
@@ -279,6 +300,8 @@
             CheckEntryList[(int)index] = (decimal)newValue;    
         } 
         TotalCheckAmount = CheckEntryList.Sum();
+        checkAmountError = CheckService.IsCheckAmountsInError(TotalCheckAmount, TotalEntryCheckAmount);
+        StateHasChanged();
     }
 
     private async void UpdateEntryCheckTotal()

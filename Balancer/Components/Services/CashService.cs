@@ -53,6 +53,18 @@ namespace Balancer.Components.Services
             }
             return total;
         }
+
+        public bool IsCashAmountsInError(decimal denomCashAmounts, decimal donorCashAmounts)
+        {
+            if (denomCashAmounts == donorCashAmounts)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
     }
 
 }
