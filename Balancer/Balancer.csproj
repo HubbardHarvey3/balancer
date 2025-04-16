@@ -56,9 +56,9 @@
         <MauiAsset Include="Resources\Raw\**" LogicalName="%(RecursiveDir)%(Filename)%(Extension)" />
     </ItemGroup>
 
-	<ItemGroup>
-        <InternalsVisibleTo Include="Balancer.Tests" />
-		<InternalsVisibleTo Include="DynamicProxyGenAssembly2" />
+    <ItemGroup>
+      <InternalsVisibleTo Include="Balancer.Tests" />
+      <InternalsVisibleTo Include="DynamicProxyGenAssembly2" />
     </ItemGroup>
 
 

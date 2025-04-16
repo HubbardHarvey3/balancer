@@ -68,3 +68,7 @@ project.assets.json
 **/WinUI/bin/
 **/WinUI/obj/
 **/WinUI/AppPackages/
+
+# Coverage Reports
+coveragereport/
+TestResults/
