@@ -62,5 +62,23 @@ namespace Balancer.Tests
 
             Assert.Equal(100m, total);
         }
+
+        [Fact]
+        public void IsCashAmountInError_ReturnsTrue()
+        {
+            var denomCashAmounts = 11;
+            var donorCashAmounts = 10;
+
+            Assert.True(_cashService.IsCashAmountsInError(denomCashAmounts, donorCashAmounts));
+        }
+
+        [Fact]
+        public void IsCashAmountInError_ReturnsFalse()
+        {
+            var denomCashAmounts = 11;
+            var donorCashAmounts = 11;
+
+            Assert.False(_cashService.IsCashAmountsInError(denomCashAmounts, donorCashAmounts));
+        }
     }
 }

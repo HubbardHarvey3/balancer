@@ -35,5 +35,24 @@ namespace Balancer.Tests
             Assert.Equal(550m, total);
 
         }
+
+        [Fact]
+        public void IsCheckAmountInError_ReturnsTrue()
+        {
+            var checkAmounts = 11;
+            var donorCheckAmounts = 10;
+
+            Assert.True(_checkService.IsCheckAmountsInError(checkAmounts, donorCheckAmounts));
+        }
+
+        [Fact]
+        public void IsCheckAmountInError_ReturnsFalse()
+        {
+            var checkAmounts = 11;
+            var donorCheckAmounts = 11;
+
+            Assert.False(_checkService.IsCheckAmountsInError(checkAmounts, donorCheckAmounts));
+        }
+
     }
 }

@@ -1,3 +1,9 @@
+# Set PowerShell as the shell for this Makefile
+SHELL := C:\Program Files\Git\git-bash.exe
+
+dir:
+	echo "$(CURDIR)"
+
 test:
 	dotnet test --configuration Debug --settings coverlet.runsettings
 	reportgenerator "-reports:Balancer.Tests/TestResults/**/coverage.cobertura.xml" "-targetdir:coveragereport" "-reporttypes:Html"
