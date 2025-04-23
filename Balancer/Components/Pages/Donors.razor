@@ -53,7 +53,7 @@
             <tr>
                 <td>@donor.DonorNumber</td>
                 <td>
-                    @if (editingDonor?.Name == donor.Name)
+                    @if (editingDonor?.DonorNumber == donor.DonorNumber)
                     {
                         <MudTextField @bind-Value="editingDonor.Name" Variant="Variant.Outlined"></MudTextField>
                     }
@@ -63,7 +63,7 @@
                     }
                 </td>
                 <td>
-                    @if (editingDonor?.Address == donor.Address)
+                    @if (editingDonor?.DonorNumber == donor.DonorNumber)
                     {
                         <MudTextField @bind-Value="editingDonor.Address" Variant="Variant.Outlined"></MudTextField>
                     } 
@@ -93,7 +93,7 @@
 @code {
     private List<DonorModel> donors = new();
     private DonorModel newDonor = new();
-    private DonorModel? editingDonor;
+    internal DonorModel? editingDonor;
 
     protected override async Task OnInitializedAsync()
     {
@@ -135,10 +135,11 @@
         editingDonor = null;
     }
 
-    private async Task DeleteDonor(int donorNumber)
+    public async Task DeleteDonor(int donorNumber)
     {
         await DonorService.DeleteDonorAsync(donorNumber);
         await LoadDonors();
+        StateHasChanged();
     }
 
     private async Task Confirm(int donorNumber) {
@@ -155,6 +156,5 @@
         {
             Logger.LogInformation("Dialog was canceled");
         }
-        DialogService.Close(dialogresult);
     }
 }
