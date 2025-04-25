@@ -52,5 +52,26 @@ namespace Balancer.Components.Services
                 await _dbContext.SaveChangesAsync();
             }
         }
+
+        public async Task UpdateDonorAmounts(List<DonationEntryModel> donorList)
+        {
+            foreach (var donor in donorList)
+            {
+                _logger.LogInformation("Updating {Name}", donor.Name);
+                var donorToUpdate = await _dbContext.Donors.FindAsync(donor.DonorNumber);
+                if (donorToUpdate == null)
+                {
+                    _logger.LogInformation("Donor {Name} Not Found", donor.Name);
+                }
+                else
+                {
+                    donorToUpdate.DonationEntries ??= new List<Guid>();
+                    _logger.LogInformation("Adding new transaction id to {Name}", donor.Name);
+                    donorToUpdate.DonationEntries.Add(donor.TransactionId);
+                }
+            }
+            await _dbContext.SaveChangesAsync();
+            _logger.LogInformation("Finished updating donor amounts and saved changes.");
+        }
     }
 }

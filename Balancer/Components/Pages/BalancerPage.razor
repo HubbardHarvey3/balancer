@@ -93,6 +93,11 @@
                 </td>
             </tr> 
         } 
+        <tr>
+            <td>
+                <MudButton OnClick="UpdateTotalDonorAmount" Variant="Variant.Filled" Color="Color.Primary">Update Donor Amounts</MudButton>
+            </td>
+        </tr>
     </tbody> 
 </MudSimpleTable> 
 
@@ -311,6 +316,12 @@
             TotalEntryCheckAmount = await CheckService.GetTotalDonationCheckAmount(DateOnly.FromDateTime((DateTime)entryDate));
         }
 
+    }
+
+    private void UpdateTotalDonorAmount()
+    {
+        Logger.LogInformation("Updating Total Donor Amounts");
+        DonorService.UpdateDonorAmounts(donorEntries);
     }
 
 }

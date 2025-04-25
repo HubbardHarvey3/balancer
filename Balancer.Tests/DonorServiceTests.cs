@@ -52,6 +52,9 @@ namespace Balancer.Tests
             var result = await donorService.GetDonorsAsync();
 
             Assert.Equal(3, result.Count);
+
+            testDbContext.Donors.RemoveRange(_dbContext.Donors);
+            await _dbContext.SaveChangesAsync();
         }
 
         [Fact]
@@ -72,6 +75,9 @@ namespace Balancer.Tests
 
             Assert.NotNull(result);
             Assert.Equal(donor.Name, result.Name);
+
+            await _donorService.DeleteDonorAsync(4);
+            await _dbContext.SaveChangesAsync();
         }
 
         [Fact]
@@ -90,6 +96,9 @@ namespace Balancer.Tests
             var donorInDb = await _dbContext.Donors.FindAsync(6);
             Assert.NotNull(donorInDb);
             Assert.Equal("John Doe", donorInDb.Name);
+
+            await _donorService.DeleteDonorAsync(6);
+            await _dbContext.SaveChangesAsync();
         }
 
         [Fact]
@@ -113,6 +122,9 @@ namespace Balancer.Tests
 
             Assert.NotNull(updatedDonor);
             Assert.Equal("Updated Name", updatedDonor.Name);
+
+            await _donorService.DeleteDonorAsync(7);
+            await _dbContext.SaveChangesAsync();
         }
 
         [Fact]
@@ -133,6 +145,95 @@ namespace Balancer.Tests
             var deletedDonor = await _dbContext.Donors.FindAsync(8);
 
             Assert.Null(deletedDonor);
+        }
+
+        // This tes was written by Gemini
+        [Fact]
+        public async Task UpdateDonorAmounts_AddsTransactionIdsAndHandlesMissingDonors()
+        {
+            // Arrange
+            var donor1 = new DonorModel 
+            { 
+                DonorNumber = 101, 
+                Name = "Alice", 
+                DonationEntries = null 
+            }; 
+            var donor2 = new DonorModel 
+            { 
+                DonorNumber = 102, 
+                Name = "Bob", 
+                DonationEntries = new List<Guid> 
+                { 
+                    Guid.NewGuid() 
+                } 
+            };
+            _dbContext.Donors.AddRange(donor1, donor2);
+            await _dbContext.SaveChangesAsync();
+
+            // 2. Create donation entries list
+            var transactionId1 = Guid.NewGuid();
+            var transactionId2 = Guid.NewGuid();
+            var transactionId3 = Guid.NewGuid();
+
+            var donationEntries = new List<DonationEntryModel>
+            {
+                new() 
+                { 
+                    DonorNumber = 101, 
+                    Name = "Alice Entry", 
+                    TransactionId = transactionId1, 
+                    Date = DateOnly.FromDateTime(DateTime.UtcNow) 
+                },
+                new() { 
+                    DonorNumber = 102, 
+                    Name = "Bob Entry", 
+                    TransactionId = transactionId2, 
+                    Date = DateOnly.FromDateTime(DateTime.UtcNow) 
+                },
+                new() 
+                { 
+                    DonorNumber = 999, 
+                    Name = "Unknown Entry", 
+                    TransactionId = transactionId3, 
+                    Date = DateOnly.FromDateTime(DateTime.UtcNow) 
+                }
+            };
+
+            // Act
+            await _donorService.UpdateDonorAmounts(donationEntries);
+
+            var updatedDonor1 = await _dbContext.Donors.FindAsync(101);
+            var updatedDonor2 = await _dbContext.Donors.FindAsync(102);
+            var nonExistentDonor = await _dbContext.Donors.FindAsync(999);
+
+            // 2. Check donor 1 (was null)
+            Assert.NotNull(updatedDonor1);
+            Assert.NotNull(updatedDonor1.DonationEntries);
+            Assert.Single(updatedDonor1.DonationEntries);
+            Assert.Contains(transactionId1, updatedDonor1.DonationEntries);
+
+            // 3. Check donor 2 (was not null)
+            Assert.NotNull(updatedDonor2);
+            Assert.NotNull(updatedDonor2.DonationEntries);
+            Assert.Equal(2, updatedDonor2.DonationEntries.Count);
+            Assert.Contains(transactionId2, updatedDonor2.DonationEntries);
+
+            // 4. Check non-existent donor wasn't created
+            Assert.Null(nonExistentDonor);
+
+            // 5. Test empty list scenario (covers the loop not running)
+            // Arrange
+            var initialDonorCount = await _dbContext.Donors.CountAsync();
+            var emptyList = new List<DonationEntryModel>();
+            // Act
+            await _donorService.UpdateDonorAmounts(emptyList);
+            // Assert
+            var finalDonorCount = await _dbContext.Donors.CountAsync();
+            Assert.Equal(initialDonorCount, finalDonorCount);
+
+            // Cleanup
+            _dbContext.Donors.RemoveRange(updatedDonor1, updatedDonor2);
+            await _dbContext.SaveChangesAsync();
         }
     }
 

@@ -9,6 +9,7 @@ namespace Balancer.Components.Services
         Task AddDonorsAsync(DonorModel donor);
         Task UpdateDonorAsync(DonorModel donor);
         Task DeleteDonorAsync(int donorNumber);
+        Task UpdateDonorAmounts(List<DonationEntryModel> donorEntryList);
 
     }
 }
